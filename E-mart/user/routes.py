@@ -11,21 +11,21 @@ router = APIRouter()
 templates= Jinja2Templates ( directory = "user/templates" )
 
 
-@router.get("/", response_class=HTMLResponse)
+@router.get("/first/", response_class=HTMLResponse)
 async def index(request:Request):
     return templates.TemplateResponse("product.html",{
         "request": request,
     })
 
 
-@router.get("/first/")
+@router.get("/")
 async def index(request:Request):
-    return templates.TemplateResponse("fashion.html",{
+    return templates.TemplateResponse("index.html",{
         "request": request,
     })
 
 @router.get("/second/")
-async def second(request:Request):
+async def read_item(request:Request):
     return templates.TemplateResponse("electronic.html",{
         "request": request,
     })
@@ -36,17 +36,23 @@ async def third(request:Request):
         "request": request,
     })
 
-@router.get("/four/", response_class=HTMLResponse)
+@router.get("/four/")
 async def four(request:Request):
-    return templates.TemplateResponse("index.html",{
+    return templates.TemplateResponse("fashion.html",{
+        "request": request,
+    })
+
+
+@router.get("/category_page/", response_class=HTMLResponse)
+async def four(request:Request):
+    return templates.TemplateResponse("category.html",{
         "request": request,
     })
 
 
 
-
 @router.post("/Category/")
-async def create_category(category_image: UploadFile = File(...),
+async def create_category(request:Request,
             name: str = Form(...),
             description:str =Form(...),
             ):
@@ -56,69 +62,34 @@ async def create_category(category_image: UploadFile = File(...),
 
           slug = slugify(name)
 
-          FILEPATH = "static/img/product/"
-          filename = category_image.filename
-          extension = filename.split(".")[1] 
-          imagename = filename.split(".")[0] 
-
-          if extension not in ["png", "jpg", "jpeg", "jfif"]:
-              return{"status": "error","detial": "File extension not allowed"}
-
-          dt = datetime.now()
-          dt_timestamp = round(datetime.timestamp(dt))
-
-          modified_image_name = imagename+"_"+str(dt_timestamp)+"."+extension
-          genrated_name = FILEPATH + modified_image_name
-          file_content = await category_image.read()
-        
-          with open (genrated_name, "wb") as file:
-              file.write(file_content)
-
-          file.close()
-
           category_obj = await Category.create(
-                 category_image=genrated_name,
                  name=name,
                  slug=slug,
                  description=description)
                 
-          return {"category added"}
+          return templates.TemplateResponse("index.html",{
+               'request':request
+          })
 
 
 @router.post("/SubCategory/")
-async def create_subcategory(subcategory_image: UploadFile = File(...),
+async def create_subcategory(request:Request,
             name: str = Form(...),category_id: str = Form(...), description:str=Form(...),
             ):
           category = await Category.get(id=category_id)
           slug = slugify(name)
 
-          FILEPATH = "static/img/product/"
-          filename = subcategory_image.filename
-          extension = filename.split(".")[1] 
-          imagename = filename.split(".")[0] 
-
-          if extension not in ["png", "jpg", "jpeg", "jfif"]:
-                return{"status": "error","detial": "File extension not allowed"}
-
-          dt = datetime.now()
-          dt_timestamp = round(datetime.timestamp(dt))
-
-          modified_image_name = imagename+"_"+str(dt_timestamp)+"."+extension
-          genrated_name = FILEPATH + modified_image_name
-          file_content = await subcategory_image.read()
-        
-          with open (genrated_name, "wb") as file:
-              file.write(file_content)
-          file.close()
+          
 
           subcategory_obj = await SubCategory.create(
-                 subcategory_image=genrated_name,
                  name=name,
                  slug=slug,
                  category=category,
                  description=description)
 
-          return {"message": "subcategory add"}
+          return templates.TemplateResponse("index.html",{
+               'request':request
+          })
 
 
 @router.post("/product/")
