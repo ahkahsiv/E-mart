@@ -7,7 +7,6 @@ class Category(Model):
     id = fields.IntField(pk=True)
     name = fields.CharField(200, unique=True)
     slug = fields.CharField(200)
-    category_image=fields.TextField()
     description=fields.TextField()
     is_active=fields.BooleanField(default=True)
     updated_at = fields.DatetimeField(auto_now=True)
@@ -18,7 +17,6 @@ class SubCategory(Model):
     id = fields.IntField(pk=True)
     name = fields.CharField(200, unique=True)
     slug = fields.CharField(200)
-    subcategory_image = fields.TextField()
     description = fields.TextField()
     category = fields.ForeignKeyField(
         "models.Category", related_name="subcategory", on_delete="CASCADE")

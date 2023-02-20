@@ -18,23 +18,32 @@ async def index(request:Request):
     })
 
 
-@router.get("/first/", response_class=HTMLResponse)
+@router.get("/first/")
 async def index(request:Request):
     return templates.TemplateResponse("fashion.html",{
         "request": request,
     })
 
-@router.get("second/", response_class=HTMLResponse)
-async def index(request:Request):
+@router.get("/second/")
+async def second(request:Request):
     return templates.TemplateResponse("electronic.html",{
         "request": request,
     })
 
-@router.get("third/", response_class=HTMLResponse)
-async def index(request:Request):
+@router.get("/third/")
+async def third(request:Request):
     return templates.TemplateResponse("jewellery.html",{
         "request": request,
     })
+
+@router.get("/four/", response_class=HTMLResponse)
+async def four(request:Request):
+    return templates.TemplateResponse("index.html",{
+        "request": request,
+    })
+
+
+
 
 @router.post("/Category/")
 async def create_category(category_image: UploadFile = File(...),
