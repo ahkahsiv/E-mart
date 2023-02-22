@@ -47,8 +47,8 @@
                      <div class="custom_menu">
                         <ul>
                            <li><a href="/category_page/">Add Category</a></li>
-                           <li><a href="#">Add Sub Category</a></li>
-                           <li><a href="#">Add Product</a></li>
+                           <li><a href="/sub_category_page/">Add Sub Category</a></li>
+                           <li><a href="/product_page/">Add Product</a></li>
                            <li><a href="#">Today's Deals</a></li>
                            <li><a href="#">Customer Service</a></li>
                         </ul>
@@ -182,15 +182,17 @@
                      <div class="fashion_section_2">
                         <div class="row">
                            <div class="col-lg-4 col-sm-4">
+                              {% for p in product  %}
                               <div class="box_main">
                                  <h4 class="shirt_text">Man T -shirt</h4>
                                  <p class="price_text">Price  <span style="color: #262626;">$ 30</span></p>
-                                 <div class="tshirt_img"><img src="../static/images/tshirt-img.png"></div>
+                                 <div class="tshirt_img"><img src="{{url}}/{{p.product_image}}"></div>
                                  <div class="btn_main">
                                     <div class="buy_bt"><a href="#">Buy Now</a></div>
                                     <div class="seemore_bt"><a href="#">See More</a></div>
                                  </div>
                               </div>
+                              {% endfor %}
                            </div>
                            <div class="col-lg-4 col-sm-4">
                               <div class="box_main">

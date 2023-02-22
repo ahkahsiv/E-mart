@@ -20,8 +20,10 @@ async def index(request:Request):
 
 @router.get("/")
 async def index(request:Request):
+    product = await Product.all() 
     return templates.TemplateResponse("index.html",{
         "request": request,
+        "product":product,
     })
 
 @router.get("/second/")
@@ -48,6 +50,23 @@ async def four(request:Request):
     return templates.TemplateResponse("category.html",{
         "request": request,
     })
+
+
+@router.get("/sub_category_page/", response_class=HTMLResponse)
+async def four(request:Request):
+    return templates.TemplateResponse("sub_category.html",{
+        "request": request,
+    })
+
+
+@router.get("/product_page/")
+async def read_item(request:Request):
+     
+     return templates.TemplateResponse("add_product.html",{
+          "request":request,
+          
+     })
+
 
 
 
@@ -92,14 +111,20 @@ async def create_subcategory(request:Request,
           })
 
 
-@router.post("/product/")
+@router.post("/product/")   
 async def create_product(request:Request,image: UploadFile = File(...),
+                         product_name:str= Form(...),
             sellingPrice:float = Form(...),
             description:str = Form(...),
             brand:str = Form(...),
             sub_category_id:str = Form(...),
             category_id:str =Form(...)):
+          print(category_id)
+          sub_category_id=int(sub_category_id)
+          category_id=int(category_id)
 
+
+          category = await Category.get(id = category_id)
           subcategory = await SubCategory.get(id=sub_category_id)
           FILEPATH = "static/img/product/"
           filename = image.filename
@@ -122,14 +147,15 @@ async def create_product(request:Request,image: UploadFile = File(...),
               file.close()
 
               product_obj = await Product.create(
+                product_name=product_name,
                 product_image=genrated_name,
                 selling_price=sellingPrice,
                 description=description,
                 brand=brand, 
                 subcategory=subcategory,
-                category=category_id)
+                category=category)
     
-              return templates.TemplateResponse("done.html",{
+              return templates.TemplateResponse("index.html",{
                 "request": request,
                 })
 
